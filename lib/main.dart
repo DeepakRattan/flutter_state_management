@@ -23,11 +23,8 @@ class MyApp extends StatelessWidget {
 class Level1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        MyTextField(),
-        Level2(),
-      ],
+    return Container(
+      child: Level2(),
     );
   }
 }
@@ -35,8 +32,11 @@ class Level1 extends StatelessWidget {
 class Level2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Level3(),
+    return Column(
+      children: [
+        MyTextField(),
+        Level3(),
+      ],
     );
   }
 }
@@ -56,19 +56,27 @@ class Level3 extends StatelessWidget {
 class MyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Text(
-      Provider.of<Data>(context).data,
-    );
+    return Text(Provider.of<Data>(context, listen: false).data);
   }
 }
 
 class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return TextField();
+    return TextField(
+      onChanged: (newText) {
+        Provider.of<Data>(context).changeString(newText);
+      },
+    );
   }
 }
 
 class Data extends ChangeNotifier {
-  String data = 'Some data';
+  String data = 'State Management Using Provider';
+
+  void changeString(String newString) {
+    data = newString;
+    // As we update the data to new string value ,everybody who is listening to our provider can build their widget as well
+    notifyListeners();
+  }
 }
